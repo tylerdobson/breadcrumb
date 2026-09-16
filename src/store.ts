@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { chmodSync, existsSync, mkdirSync } from 'node:fs';
+import { chmodSync, mkdirSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { isAbsolute, join, resolve } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
@@ -38,13 +38,9 @@ export interface Idea {
 
 export function dataDirectory(env: NodeJS.ProcessEnv = process.env): string {
   if (env.PAUSEPIN_HOME) return resolve(env.PAUSEPIN_HOME);
-  if (env.BREADCRUMB_HOME) return resolve(env.BREADCRUMB_HOME);
   const base = env.XDG_DATA_HOME && isAbsolute(env.XDG_DATA_HOME)
     ? env.XDG_DATA_HOME : join(homedir(), '.local', 'share');
-  const current = join(base, 'pausepin');
-  if (existsSync(join(current, 'pausepin.sqlite')) || existsSync(join(current, 'breadcrumb.sqlite'))) return current;
-  const legacy = join(base, 'breadcrumb');
-  return existsSync(join(legacy, 'breadcrumb.sqlite')) ? legacy : current;
+  return join(base, 'pausepin');
 }
 
 export class Store {
@@ -52,9 +48,7 @@ export class Store {
 
   constructor(directory = dataDirectory()) {
     mkdirSync(directory, { recursive: true, mode: 0o700 });
-    const currentPath = join(directory, 'pausepin.sqlite');
-    const legacyPath = join(directory, 'breadcrumb.sqlite');
-    const path = existsSync(currentPath) || !existsSync(legacyPath) ? currentPath : legacyPath;
+    const path = join(directory, 'pausepin.sqlite');
     // SQLite creates journal files too; keep the original mask after opening.
     const mask = process.umask(0o077);
     try {

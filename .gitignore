@@ -7,5 +7,4 @@ coverage/
 .env.*
 *.sqlite
 *.sqlite-*
-.breadcrumb/
 .pausepin/

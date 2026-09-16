@@ -32,15 +32,13 @@ Drift means the saved context deserves another look. It does not explain the cau
 
 Outside a Git repository, task notes and checkpoints still work, but there is no Git drift assessment. Git fingerprints also do not cover external services or other state outside the repository.
 
-Keep the data directory outside your project when overriding `PAUSEPIN_HOME` or the legacy `BREADCRUMB_HOME`. Otherwise, database writes can become part of the repository fingerprint and cause drift themselves.
+Keep the data directory outside your project when overriding `PAUSEPIN_HOME`. Otherwise, database writes can become part of the repository fingerprint and cause drift themselves.
 
 On `pause`, omitted context fields retain their current values. An empty `--note ''` or `--decision ''` clears that field to `null`; `--next` cannot be empty. Text values have surrounding whitespace removed.
 
 ## Export
 
 `pausepin export` writes the current project's recorded context as JSON to standard output. This is useful for inspection and backup. The initial release has no import command or integration that consumes the format.
-
-The rename from Breadcrumb to Pausepin does not change the SQLite schema, export format, or Git fingerprint algorithm. Existing checkpoints remain readable and comparable. See [local data and upgrade behavior](../README.md#local-data) for how existing databases are selected.
 
 The export envelope uses `schemaVersion: 1`:
 

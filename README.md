@@ -72,15 +72,11 @@ Colors turn on automatically in a TTY when `TERM` is not `dumb`. Set `NO_COLOR` 
 
 Pausepin uses SQLite and keeps its database outside your project:
 
-- Default for new stores: `~/.local/share/pausepin/pausepin.sqlite`
+- Default: `~/.local/share/pausepin/pausepin.sqlite`
 - With an absolute `XDG_DATA_HOME`: `$XDG_DATA_HOME/pausepin/pausepin.sqlite`
 - With `PAUSEPIN_HOME`: `$PAUSEPIN_HOME/pausepin.sqlite`
 
-`PAUSEPIN_HOME` selects the data directory and takes precedence over the legacy `BREADCRUMB_HOME` override, which is still accepted. Use an override for an isolated demo or development store. Choose a directory outside the project so database writes do not change the project's Git fingerprint. A relative `XDG_DATA_HOME` is ignored in favor of the default location.
-
-Upgrading from Breadcrumb: `crumb` remains an executable alias, and saved tasks are retained. If the new default store is absent, Pausepin uses an existing `~/.local/share/breadcrumb/breadcrumb.sqlite` in place, or its equivalent under an absolute `XDG_DATA_HOME`. Nothing is copied. Within an override directory, Pausepin opens `pausepin.sqlite` if present, otherwise an existing `breadcrumb.sqlite`, otherwise a new `pausepin.sqlite`. The database schema and Git fingerprint algorithm are unchanged.
-
-If you previously installed Breadcrumb with `npm link`, run `npm uninstall -g @tylerdobson/breadcrumb` before linking Pausepin. This replaces the old executable link without deleting your saved data. Keep the projects you track at their existing paths: project identity is based on the canonical directory, not the repository name.
+`PAUSEPIN_HOME` selects the data directory and takes precedence over `XDG_DATA_HOME`. The database filename is always `pausepin.sqlite`. Use an override for an isolated demo or development store. Choose a directory outside the project so database writes do not change the project's Git fingerprint. A relative `XDG_DATA_HOME` is ignored in favor of the default location.
 
 There is no telemetry, account, or cloud sync. Pausepin records your notes and Git fingerprints, not copies of your source files. It does not commit, switch branches, or edit your project files. Exported JSON contains your recorded project context, including private notes; review it before sharing.
 
@@ -101,7 +97,7 @@ The implementation uses TypeScript and Node's built-in SQLite support, with zero
 
 ## What comes next
 
-First, make daily use of these commands dependable. Then explore import support, checkpoint compatibility across tools, and one coding-agent integration. Agent summaries should preserve the difference between a suggestion, a human note, and verified evidence.
+First, make daily use of these commands dependable. Then explore import support, a shared checkpoint format, and one coding-agent integration. Agent summaries should preserve the difference between a suggestion, a human note, and verified evidence.
 
 Useful early feedback: How long did it take to make your first useful change after returning? What did the return note get wrong? How much work did keeping the note require?
 

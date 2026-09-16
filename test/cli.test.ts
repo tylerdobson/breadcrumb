@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { execFileSync, spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, realpathSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, test } from 'node:test';
@@ -254,12 +254,20 @@ test('invalid arguments produce parseable errors without creating task history',
 
 test('help and version are available without opening a database', () => {
   const { home, json, run } = fixture();
-  assert.match(json(['--help']).help, /pausepin start/);
+  const help = json(['--help']).help;
+  assert.match(help, /pausepin start/);
+  assert.doesNotMatch(help, /breadcrumb|\bcrumb\b/i);
   assert.equal(json(['--version']).version, '0.1.0');
   const result = run([]);
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /Usage:/);
   assert.equal(existsSync(home), false);
+});
+
+test('the package exposes only the pausepin executable', () => {
+  const manifest = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+  assert.equal(manifest.name, '@tylerdobson/pausepin');
+  assert.deepEqual(manifest.bin, { pausepin: 'dist/cli.js' });
 });
 
 test('task capture and recovery work when Git is not installed', () => {

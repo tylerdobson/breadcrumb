@@ -25,7 +25,6 @@ One unfinished task per project. Run commands inside that project.
 Colors follow your terminal. Set NO_COLOR=1 to turn them off.
 Pause saves context, not source files. Done records your decision, not a test result.
 Notes stay in your local data directory; PAUSEPIN_HOME overrides its location.
-The crumb command and BREADCRUMB_HOME remain supported for compatibility.
 `;
 
 function readable(value: string): string {

@@ -20,7 +20,7 @@ export PAUSEPIN_HOME="$(mktemp -d)"
 pausepin --help
 ```
 
-Keep that directory if you need its recorded sessions. Unset `PAUSEPIN_HOME` when you want to return to your normal store. The legacy `crumb` executable and `BREADCRUMB_HOME` override remain supported; see [local data and upgrade behavior](README.md#local-data).
+Keep that directory if you need its recorded sessions. Unset `PAUSEPIN_HOME` when you want to return to your normal store. See [local data](README.md#local-data) for storage locations.
 
 ## Make a change
 
@@ -47,4 +47,4 @@ Use a minimal example when possible. Review terminal output and exports for priv
 
 ## Project scope
 
-The first release focuses on local tasks, parked ideas, return checkpoints, and Git drift detection. Integrations and shared checkpoint formats can follow once the core workflow is dependable. Discuss a new runtime dependency or a change to storage/export compatibility before building a large contribution.
+The first release focuses on local tasks, parked ideas, return checkpoints, and Git drift detection. Integrations and shared checkpoint formats can follow once the core workflow is dependable. Discuss a new runtime dependency or a change to the storage/export format before building a large contribution.

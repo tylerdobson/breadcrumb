@@ -9,13 +9,13 @@ import { captureGitSnapshot, findGitRoot } from '../src/git.ts';
 const temporaryDirectories: string[] = [];
 
 function directory(): string {
-  const path = mkdtempSync(join(tmpdir(), 'breadcrumb-git-'));
+  const path = mkdtempSync(join(tmpdir(), 'pausepin-git-'));
   temporaryDirectories.push(path);
   return path;
 }
 
 function git(cwd: string, ...args: string[]): string {
-  return execFileSync('git', ['-c', 'user.name=Breadcrumb Test', '-c', 'user.email=breadcrumb@example.invalid', '-c', 'commit.gpgsign=false', '-C', cwd, ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+  return execFileSync('git', ['-c', 'user.name=Pausepin Test', '-c', 'user.email=pausepin@example.invalid', '-c', 'commit.gpgsign=false', '-C', cwd, ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
 }
 
 function repository(): string {
