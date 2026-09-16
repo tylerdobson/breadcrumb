@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { chmodSync, mkdirSync } from 'node:fs';
+import { chmodSync, existsSync, mkdirSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { isAbsolute, join, resolve } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
@@ -37,10 +37,14 @@ export interface Idea {
 }
 
 export function dataDirectory(env: NodeJS.ProcessEnv = process.env): string {
+  if (env.PAUSEPIN_HOME) return resolve(env.PAUSEPIN_HOME);
   if (env.BREADCRUMB_HOME) return resolve(env.BREADCRUMB_HOME);
   const base = env.XDG_DATA_HOME && isAbsolute(env.XDG_DATA_HOME)
     ? env.XDG_DATA_HOME : join(homedir(), '.local', 'share');
-  return join(base, 'breadcrumb');
+  const current = join(base, 'pausepin');
+  if (existsSync(join(current, 'pausepin.sqlite')) || existsSync(join(current, 'breadcrumb.sqlite'))) return current;
+  const legacy = join(base, 'breadcrumb');
+  return existsSync(join(legacy, 'breadcrumb.sqlite')) ? legacy : current;
 }
 
 export class Store {
@@ -48,7 +52,9 @@ export class Store {
 
   constructor(directory = dataDirectory()) {
     mkdirSync(directory, { recursive: true, mode: 0o700 });
-    const path = join(directory, 'breadcrumb.sqlite');
+    const currentPath = join(directory, 'pausepin.sqlite');
+    const legacyPath = join(directory, 'breadcrumb.sqlite');
+    const path = existsSync(currentPath) || !existsSync(legacyPath) ? currentPath : legacyPath;
     // SQLite creates journal files too; keep the original mask after opening.
     const mask = process.umask(0o077);
     try {
@@ -61,7 +67,7 @@ export class Store {
     const version = this.db.prepare('PRAGMA user_version').get()?.user_version;
     if (version !== 0 && version !== 1) {
       this.db.close();
-      throw new Error('This database uses a newer format. Upgrade Breadcrumb before opening it.');
+      throw new Error('This database uses a newer format. Upgrade Pausepin before opening it.');
     }
     this.db.exec(`
       CREATE TABLE IF NOT EXISTS tasks (
@@ -106,13 +112,13 @@ export class Store {
 
   private requireCurrent(project: string): Task {
     const task = this.current(project);
-    if (!task) throw new Error('No unfinished task here. Start one with crumb start "goal" --next "action" --done-when "criterion".');
+    if (!task) throw new Error('No unfinished task here. Start one with pausepin start "goal" --next "action" --done-when "criterion".');
     return task;
   }
 
   start(project: string, goal: string, next: string, doneWhen: string, snapshot: GitSnapshot | null): Task {
     return this.transaction(() => {
-      if (this.current(project)) throw new Error('This project already has an unfinished task. Use crumb resume, or crumb done before starting another.');
+      if (this.current(project)) throw new Error('This project already has an unfinished task. Use pausepin resume, or pausepin done before starting another.');
       const now = new Date().toISOString();
       const task: Task = { id: randomUUID(), project, goal, doneWhen, next, status: 'active', note: null, decision: null, createdAt: now, updatedAt: now };
       this.db.prepare('INSERT INTO tasks VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')

@@ -8,23 +8,24 @@ import type { Theme } from './terminal.js';
 import type { Checkpoint, Task } from './store.js';
 import type { GitSnapshot } from './git.js';
 
-const HELP = `Breadcrumb — pick up where you left off.
+const HELP = `Pausepin — pin your place. Pick up where you left off.
 
 Usage:
-  crumb start "goal" --next "action" --done-when "criterion"
-  crumb park "idea"
-  crumb pause [--note "hypothesis"] [--next "action"] [--decision "question"]
-  crumb resume
-  crumb status
-  crumb ideas
-  crumb done
-  crumb export
+  pausepin start "goal" --next "action" --done-when "criterion"
+  pausepin park "idea"
+  pausepin pause [--note "hypothesis"] [--next "action"] [--decision "question"]
+  pausepin resume
+  pausepin status
+  pausepin ideas
+  pausepin done
+  pausepin export
 
 One unfinished task per project. Run commands inside that project.
 --json emits structured output. --help shows this guide. --version shows the version.
 Colors follow your terminal. Set NO_COLOR=1 to turn them off.
 Pause saves context, not source files. Done records your decision, not a test result.
-Notes stay in your local data directory; BREADCRUMB_HOME overrides its location.
+Notes stay in your local data directory; PAUSEPIN_HOME overrides its location.
+The crumb command and BREADCRUMB_HOME remain supported for compatibility.
 `;
 
 function readable(value: string): string {
@@ -73,9 +74,9 @@ function main(): void {
   if (values.version) { output({ version: '0.1.0' }, '0.1.0'); return; }
   if (values.help || !positionals.length) {
     const help = HELP
-      .replace(/^Breadcrumb.*$/m, text => theme.heading(text))
+      .replace(/^Pausepin.*$/m, text => theme.heading(text))
       .replace(/^Usage:$/m, text => theme.label(text))
-      .replace(/crumb [a-z]+/g, text => theme.heading(text));
+      .replace(/pausepin [a-z]+/g, text => theme.heading(text));
     output({ help: HELP }, help);
     return;
   }
@@ -84,14 +85,14 @@ function main(): void {
     start: ['next', 'done-when'], pause: ['next', 'note', 'decision'],
     park: [], resume: [], status: [], ideas: [], done: [], export: [],
   };
-  if (!command || !Object.hasOwn(allowed, command)) throw new Error(`Unknown command: ${command}. Run crumb --help.`);
+  if (!command || !Object.hasOwn(allowed, command)) throw new Error(`Unknown command: ${command}. Run pausepin --help.`);
   for (const option of Object.keys(values)) {
     if (!['json', 'help', 'version'].includes(option) && !allowed[command]!.includes(option)) {
-      throw new Error(`--${option} is not supported by crumb ${command}.`);
+      throw new Error(`--${option} is not supported by pausepin ${command}.`);
     }
   }
   const needsText = command === 'start' || command === 'park';
-  if (args.length !== (needsText ? 1 : 0)) throw new Error(`Unexpected arguments. Run crumb --help; quote goals and ideas containing spaces.`);
+  if (args.length !== (needsText ? 1 : 0)) throw new Error(`Unexpected arguments. Run pausepin --help; quote goals and ideas containing spaces.`);
   if (needsText && !args[0]?.trim()) throw new Error('Enter a nonempty goal or idea.');
   if (values.next !== undefined && !values.next.trim()) throw new Error('--next must describe a nonempty action.');
   if (command === 'start' && (!values.next?.trim() || !values['done-when']?.trim())) {
@@ -108,17 +109,17 @@ function main(): void {
       output({ task }, `${theme.success('Started:')} ${readable(task.goal)}\n${theme.next(`Next: ${readable(task.next)}`)}\n${theme.label('Done when:')} ${readable(task.doneWhen)}`);
     } else if (command === 'park') {
       const idea = store.park(project, args[0]!.trim());
-      output({ idea }, `${theme.idea('Parked:')} ${readable(idea.text)}\nView saved ideas with ${theme.heading('crumb ideas')}.`);
+      output({ idea }, `${theme.idea('Parked:')} ${readable(idea.text)}\nView saved ideas with ${theme.heading('pausepin ideas')}.`);
     } else if (command === 'pause') {
       const snapshot = captureGitSnapshot(cwd);
       const task = store.pause(project, { next: values.next?.trim(), note: values.note?.trim(), decision: values.decision?.trim() }, snapshot);
       const checkpoint = store.latestCheckpoint(task.id);
-      output({ task, checkpoint }, `${theme.success('Checkpoint saved.')}\n${theme.next(`Next time: ${readable(task.next)}`)}\nReturn with ${theme.heading('crumb resume')}.`);
+      output({ task, checkpoint }, `${theme.success('Checkpoint saved.')}\n${theme.next(`Next time: ${readable(task.next)}`)}\nReturn with ${theme.heading('pausepin resume')}.`);
     } else if (command === 'resume' || command === 'status') {
       let task = store.current(project);
       if (!task) {
-        if (command === 'resume') throw new Error('No unfinished task here. Run crumb start to begin.');
-        output({ task: null }, `No unfinished task here. Run ${theme.heading('crumb start')} to begin.`);
+        if (command === 'resume') throw new Error('No unfinished task here. Run pausepin start to begin.');
+        output({ task: null }, `No unfinished task here. Run ${theme.heading('pausepin start')} to begin.`);
         return;
       }
       const snapshot = captureGitSnapshot(cwd);
@@ -131,7 +132,7 @@ function main(): void {
       output({ ideas }, ideas.length ? ideas.map((idea, i) => `${theme.idea(`${i + 1}.`)} ${readable(idea.text)}`).join('\n') : 'No parked ideas here yet.');
     } else if (command === 'done') {
       const task = store.setStatus(project, 'done');
-      output({ task, verification: 'not-recorded' }, `${theme.success('Completed by you:')} ${readable(task.goal)}\nNo tests were run or verified by Breadcrumb. Your checkpoints and ideas are retained.`);
+      output({ task, verification: 'not-recorded' }, `${theme.success('Completed by you:')} ${readable(task.goal)}\nNo tests were run or verified by Pausepin. Your checkpoints and ideas are retained.`);
     } else if (command === 'export') {
       process.stdout.write(JSON.stringify(store.export(project), null, 2) + '\n');
     }
@@ -144,6 +145,6 @@ try {
   main();
 } catch (error) {
   const message = error instanceof Error ? error.message : String(error);
-  process.stderr.write((process.argv.includes('--json') ? JSON.stringify({ error: message }) : `${createTheme(process.stderr).error('crumb:')} ${readable(message)}`) + '\n');
+  process.stderr.write((process.argv.includes('--json') ? JSON.stringify({ error: message }) : `${createTheme(process.stderr).error('pausepin:')} ${readable(message)}`) + '\n');
   process.exitCode = 1;
 }

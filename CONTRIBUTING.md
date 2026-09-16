@@ -1,6 +1,6 @@
-# Contributing to Breadcrumb
+# Contributing to Pausepin
 
-Breadcrumb should make returning to work easier than reconstructing the session yourself. A good contribution reduces the effort of capturing or recovering intent.
+Pausepin should make returning to work easier than reconstructing the session yourself. A good contribution reduces the effort of capturing or recovering intent.
 
 ## Set up
 
@@ -13,14 +13,14 @@ npm test
 npm run build
 ```
 
-Run `npm link` to make `crumb` available locally. Use a separate data directory while experimenting:
+Run `npm link` to make `pausepin` available locally. Use a separate data directory while experimenting:
 
 ```sh
-export BREADCRUMB_HOME="$(mktemp -d)"
-crumb --help
+export PAUSEPIN_HOME="$(mktemp -d)"
+pausepin --help
 ```
 
-Keep that directory if you need its recorded sessions. Unset `BREADCRUMB_HOME` when you want to return to your normal store.
+Keep that directory if you need its recorded sessions. Unset `PAUSEPIN_HOME` when you want to return to your normal store. The legacy `crumb` executable and `BREADCRUMB_HOME` override remain supported; see [local data and upgrade behavior](README.md#local-data).
 
 ## Make a change
 
@@ -41,7 +41,7 @@ ADHD-informed design is a starting hypothesis, not proof that a feature helps ev
 
 ## Report a problem
 
-Include your Breadcrumb and Node versions, operating system, the command you ran, and the expected and actual behavior. For Git-related problems, say whether the repository had commits, staged changes, untracked files, or a detached HEAD.
+Include your Pausepin and Node versions, operating system, the command you ran, and the expected and actual behavior. For Git-related problems, say whether the repository had commits, staged changes, untracked files, or a detached HEAD.
 
 Use a minimal example when possible. Review terminal output and exports for private notes, paths, credentials, and project details before posting them.
 

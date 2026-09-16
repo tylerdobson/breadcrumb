@@ -1,8 +1,8 @@
-# Breadcrumb
+# Pausepin
 
-Leave a task midway through. Come back knowing what to do next.
+Pin your place. Pick up where you left off.
 
-Breadcrumb is a local CLI that keeps your goal, next action, and stopping point together. Park an idea, save a return note, and resume with a check for changes in your Git working tree.
+Pausepin is a local CLI that keeps your goal, next action, and stopping point together. Park an idea, save a return note, and resume with a check for changes in your Git working tree.
 
 The design is ADHD-informed: one active task, one visible next action, and a place for tangents. It is an experimental developer tool, with no claim of clinical benefit. You do not need an AI account to use it.
 
@@ -13,8 +13,8 @@ Requires Node.js 24 or later and npm. Git is optional.
 Clone the repository and install from source:
 
 ```sh
-git clone https://github.com/tylerdobson/breadcrumb.git
-cd breadcrumb
+git clone https://github.com/tylerdobson/pausepin.git
+cd pausepin
 npm ci
 npm run build
 npm link
@@ -23,21 +23,21 @@ npm link
 Then open the project you want to work on:
 
 ```sh
-crumb start "Fix mobile navigation" \
+pausepin start "Fix mobile navigation" \
   --next "Reproduce the close-button failure" \
   --done-when "Keyboard interaction and mobile checks pass"
 
-crumb park "Try a simpler header layout"
+pausepin park "Try a simpler header layout"
 
-crumb pause \
+pausepin pause \
   --note "The overlay might intercept the close button" \
   --next "Inspect the overlay's pointer events" \
   --decision "Should tapping outside the menu close it?"
 
-crumb resume
+pausepin resume
 ```
 
-On return, Breadcrumb shows your saved context and checks whether the repository has changed since the checkpoint. Your note is a hypothesis you recorded; it is not a verified test result. Breadcrumb does not run tests or infer that the task is complete.
+On return, Pausepin shows your saved context and checks whether the repository has changed since the checkpoint. Your note is a hypothesis you recorded; it is not a verified test result. Pausepin does not run tests or infer that the task is complete.
 
 This project is not published to the npm registry yet. Install from source using the commands above.
 
@@ -45,40 +45,44 @@ This project is not published to the npm registry yet. Install from source using
 
 | Command | Purpose |
 | --- | --- |
-| `crumb start "goal" --next "action" --done-when "criterion"` | Start a task with a concrete next action and finish condition. |
-| `crumb park "idea"` | Save a tangent for later. |
-| `crumb pause [--note "note"] [--next "action"] [--decision "decision"]` | Save a checkpoint and optional return context. |
-| `crumb resume` | Reactivate the current task, recover its context, and check for repository changes. |
-| `crumb status` | See the current task and repository changes without changing task status. |
-| `crumb ideas` | Read parked ideas. |
-| `crumb done` | Mark the task complete yourself. |
-| `crumb export` | Write the project's recorded context as JSON to standard output. |
+| `pausepin start "goal" --next "action" --done-when "criterion"` | Start a task with a concrete next action and finish condition. |
+| `pausepin park "idea"` | Save a tangent for later. |
+| `pausepin pause [--note "note"] [--next "action"] [--decision "decision"]` | Save a checkpoint and optional return context. |
+| `pausepin resume` | Reactivate the current task, recover its context, and check for repository changes. |
+| `pausepin status` | See the current task and repository changes without changing task status. |
+| `pausepin ideas` | Read parked ideas. |
+| `pausepin done` | Mark the task complete yourself. |
+| `pausepin export` | Write the project's recorded context as JSON to standard output. |
 
 Use `--json` for machine-readable output, `--help` for usage, and `--version` for the installed version.
 
 `start` and `pause` save checkpoints. Omitting a `pause` option keeps its previous value. Use `--note ''` or `--decision ''` to clear that field; `--next` must always contain an action. You can park ideas even when no task is active.
 
-One task can be unfinished in each project. Finish it with `crumb done` before starting another. Completion records your decision; it does not certify that your finish condition passed.
+One task can be unfinished in each project. Finish it with `pausepin done` before starting another. Completion records your decision; it does not certify that your finish condition passed.
 
 In a Git repository, commands use its canonical root directory, so you can run them from subdirectories. Outside Git, the current canonical directory identifies the project. Repository drift checks are available only when Git is available and the directory is a Git repository.
 
 ## Terminal colors
 
-Breadcrumb uses cyan for goals and help headings, green for next actions and success, yellow for warnings and open decisions, magenta for parked ideas, and red for errors. The next action is also bold. Body text keeps your terminal's normal foreground color.
+Pausepin uses cyan for goals and help headings, green for next actions and success, yellow for warnings and open decisions, magenta for parked ideas, and red for errors. The next action is also bold. Body text keeps your terminal's normal foreground color.
 
-Colors turn on automatically in a TTY when `TERM` is not `dumb`. Set `NO_COLOR` to disable all styling, `FORCE_COLOR=1` to enable colors in pipes, or `FORCE_COLOR=0` to disable colors. `NO_COLOR` takes precedence whenever it is present. `--json` and `crumb export` always produce plain JSON.
+Colors turn on automatically in a TTY when `TERM` is not `dumb`. Set `NO_COLOR` to disable all styling, `FORCE_COLOR=1` to enable colors in pipes, or `FORCE_COLOR=0` to disable colors. `NO_COLOR` takes precedence whenever it is present. `--json` and `pausepin export` always produce plain JSON.
 
 ## Local data
 
-Breadcrumb uses SQLite and keeps its database outside your project:
+Pausepin uses SQLite and keeps its database outside your project:
 
-- Default: `~/.local/share/breadcrumb/breadcrumb.sqlite`
-- With an absolute `XDG_DATA_HOME`: `$XDG_DATA_HOME/breadcrumb/breadcrumb.sqlite`
-- With `BREADCRUMB_HOME`: `$BREADCRUMB_HOME/breadcrumb.sqlite`
+- Default for new stores: `~/.local/share/pausepin/pausepin.sqlite`
+- With an absolute `XDG_DATA_HOME`: `$XDG_DATA_HOME/pausepin/pausepin.sqlite`
+- With `PAUSEPIN_HOME`: `$PAUSEPIN_HOME/pausepin.sqlite`
 
-`BREADCRUMB_HOME` takes precedence and selects the data directory. Use it when you want an isolated store, such as a demo or development session. Choose a directory outside the project so database writes do not change the project's Git fingerprint. A relative `XDG_DATA_HOME` is ignored in favor of the default location.
+`PAUSEPIN_HOME` selects the data directory and takes precedence over the legacy `BREADCRUMB_HOME` override, which is still accepted. Use an override for an isolated demo or development store. Choose a directory outside the project so database writes do not change the project's Git fingerprint. A relative `XDG_DATA_HOME` is ignored in favor of the default location.
 
-There is no telemetry, account, or cloud sync. Breadcrumb records your notes and Git fingerprints, not copies of your source files. It does not commit, switch branches, or edit your project files. Exported JSON contains your recorded project context, including private notes; review it before sharing.
+Upgrading from Breadcrumb: `crumb` remains an executable alias, and saved tasks are retained. If the new default store is absent, Pausepin uses an existing `~/.local/share/breadcrumb/breadcrumb.sqlite` in place, or its equivalent under an absolute `XDG_DATA_HOME`. Nothing is copied. Within an override directory, Pausepin opens `pausepin.sqlite` if present, otherwise an existing `breadcrumb.sqlite`, otherwise a new `pausepin.sqlite`. The database schema and Git fingerprint algorithm are unchanged.
+
+If you previously installed Breadcrumb with `npm link`, run `npm uninstall -g @tylerdobson/breadcrumb` before linking Pausepin. This replaces the old executable link without deleting your saved data. Keep the projects you track at their existing paths: project identity is based on the canonical directory, not the repository name.
+
+There is no telemetry, account, or cloud sync. Pausepin records your notes and Git fingerprints, not copies of your source files. It does not commit, switch branches, or edit your project files. Exported JSON contains your recorded project context, including private notes; review it before sharing.
 
 Git fingerprints cover tracked files and nonignored untracked files. Tracked files remain included even when they match an ignore rule. Ignored untracked files and state outside the repository are excluded. Snapshotting fails explicitly above 64 MiB per file, 512 MiB of total content, or 100,000 paths, including initialized submodules. A snapshot is not atomic across Git metadata and all files; capture it when other tools have finished changing the repository.
 

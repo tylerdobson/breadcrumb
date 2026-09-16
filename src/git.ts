@@ -208,6 +208,7 @@ function snapshot(root: string, budget: Budget): GitSnapshot {
     if (budget.paths > MAX_PATHS) throw new Error('Cannot checkpoint this worktree: more than 100,000 project paths. Ignore generated files or use a smaller worktree.');
 
     const hash = createHash('sha256');
+    // Preserve this namespace so checkpoints from before the Pausepin rename still compare.
     field(hash, 'breadcrumb-git-v1');
     field(hash, branch ?? '');
     field(hash, head ?? '');

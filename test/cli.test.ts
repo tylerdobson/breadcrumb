@@ -10,16 +10,21 @@ const cli = fileURLToPath(new URL('../dist/cli.js', import.meta.url));
 const temporaryDirectories: string[] = [];
 
 function fixture() {
-  const root = mkdtempSync(join(tmpdir(), 'breadcrumb-cli-'));
+  const root = mkdtempSync(join(tmpdir(), 'pausepin-cli-'));
   temporaryDirectories.push(root);
   const project = join(root, 'project');
   const home = join(root, 'data');
   mkdirSync(project);
+  const env: NodeJS.ProcessEnv = { ...process.env };
+  for (const name of Object.keys(env)) {
+    if (['PAUSEPIN_HOME', 'BREADCRUMB_HOME'].includes(name.toUpperCase())) delete env[name];
+  }
+  env.PAUSEPIN_HOME = home;
 
   function run(args: string[], cwd = project) {
     const result = spawnSync(process.execPath, [cli, ...args], {
       cwd,
-      env: { ...process.env, BREADCRUMB_HOME: home },
+      env,
       encoding: 'utf8',
       timeout: 15_000,
     });
@@ -45,13 +50,13 @@ function fixture() {
     return parsed.error;
   }
 
-  return { root, project, home, run, json, error };
+  return { root, project, home, env, run, json, error };
 }
 
 function git(project: string, ...args: string[]): void {
   execFileSync('git', [
-    '-c', 'user.name=Breadcrumb Test',
-    '-c', 'user.email=breadcrumb@example.invalid',
+    '-c', 'user.name=Pausepin Test',
+    '-c', 'user.email=pausepin@example.invalid',
     '-c', 'commit.gpgsign=false',
     '-C', project, ...args,
   ], { stdio: ['ignore', 'pipe', 'pipe'] });
@@ -249,7 +254,7 @@ test('invalid arguments produce parseable errors without creating task history',
 
 test('help and version are available without opening a database', () => {
   const { home, json, run } = fixture();
-  assert.match(json(['--help']).help, /crumb start/);
+  assert.match(json(['--help']).help, /pausepin start/);
   assert.equal(json(['--version']).version, '0.1.0');
   const result = run([]);
   assert.equal(result.status, 0, result.stderr);
@@ -258,8 +263,7 @@ test('help and version are available without opening a database', () => {
 });
 
 test('task capture and recovery work when Git is not installed', () => {
-  const { project, home } = fixture();
-  const env: NodeJS.ProcessEnv = { ...process.env, BREADCRUMB_HOME: home };
+  const { project, env } = fixture();
   // Windows environment names are case-insensitive; remove every PATH variant.
   for (const name of Object.keys(env)) if (name.toLowerCase() === 'path') delete env[name];
   env.PATH = join(project, 'no-executables-here');

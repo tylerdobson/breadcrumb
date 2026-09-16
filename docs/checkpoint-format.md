@@ -1,6 +1,6 @@
 # Checkpoints and recorded context
 
-A Breadcrumb checkpoint is a return aid: enough information to recover intent and notice when the surrounding repository has changed.
+A Pausepin checkpoint is a return aid: enough information to recover intent and notice when the surrounding repository has changed.
 
 ## Information to preserve
 
@@ -18,7 +18,7 @@ The local store keeps several kinds of information separate:
 | Repository fingerprint | Observed Git state associated with a checkpoint. |
 | Completion state | Whether the user has marked the task complete. |
 
-These meanings are not interchangeable. A finish condition does not show that the condition passed. A return note can contain an untested hypothesis. `crumb done` records a human decision, without claiming independent verification.
+These meanings are not interchangeable. A finish condition does not show that the condition passed. A return note can contain an untested hypothesis. `pausepin done` records a human decision, without claiming independent verification.
 
 ## Detecting drift
 
@@ -28,17 +28,19 @@ When Git is available, a checkpoint records a fingerprint of the repository stat
 
 Snapshotting fails explicitly above 64 MiB per file, 512 MiB of total content, or 100,000 paths. The total-content and path limits include nested repositories captured through the snapshot. Individual file reads detect concurrent changes, but the complete snapshot is not atomic: Git metadata and files are read in separate steps. Capture checkpoints after other tools have finished writing when you need a consistent comparison.
 
-Drift means the saved context deserves another look. It does not explain the cause of a change, identify the person or tool responsible, or prove that the next action is wrong. Breadcrumb does not run tests while capturing or comparing checkpoints.
+Drift means the saved context deserves another look. It does not explain the cause of a change, identify the person or tool responsible, or prove that the next action is wrong. Pausepin does not run tests while capturing or comparing checkpoints.
 
 Outside a Git repository, task notes and checkpoints still work, but there is no Git drift assessment. Git fingerprints also do not cover external services or other state outside the repository.
 
-Keep the data directory outside your project when overriding `BREADCRUMB_HOME`. Otherwise, database writes can become part of the repository fingerprint and cause drift themselves.
+Keep the data directory outside your project when overriding `PAUSEPIN_HOME` or the legacy `BREADCRUMB_HOME`. Otherwise, database writes can become part of the repository fingerprint and cause drift themselves.
 
 On `pause`, omitted context fields retain their current values. An empty `--note ''` or `--decision ''` clears that field to `null`; `--next` cannot be empty. Text values have surrounding whitespace removed.
 
 ## Export
 
-`crumb export` writes the current project's recorded context as JSON to standard output. This is useful for inspection and backup. The initial release has no import command or integration that consumes the format.
+`pausepin export` writes the current project's recorded context as JSON to standard output. This is useful for inspection and backup. The initial release has no import command or integration that consumes the format.
+
+The rename from Breadcrumb to Pausepin does not change the SQLite schema, export format, or Git fingerprint algorithm. Existing checkpoints remain readable and comparable. See [local data and upgrade behavior](../README.md#local-data) for how existing databases are selected.
 
 The export envelope uses `schemaVersion: 1`:
 

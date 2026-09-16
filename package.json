@@ -1,9 +1,9 @@
 {
-  "name": "@tylerdobson/breadcrumb",
+  "name": "@tylerdobson/pausepin",
   "version": "0.1.0",
-  "description": "Pick up where you left off. Local checkpoints for calmer agentic engineering.",
+  "description": "Pin your place. Pick up where you left off. Local checkpoints for calmer agentic engineering.",
   "type": "module",
-  "bin": { "crumb": "dist/cli.js" },
+  "bin": { "pausepin": "dist/cli.js", "crumb": "dist/cli.js" },
   "files": ["dist", "README.md", "LICENSE", "docs/checkpoint-format.md"],
   "engines": { "node": ">=24.0.0" },
   "scripts": {
@@ -12,9 +12,9 @@
     "test": "npm run build && node --test test/*.test.ts",
     "prepack": "npm run build"
   },
-  "repository": { "type": "git", "url": "https://github.com/tylerdobson/breadcrumb.git" },
-  "homepage": "https://github.com/tylerdobson/breadcrumb#readme",
-  "bugs": { "url": "https://github.com/tylerdobson/breadcrumb/issues" },
+  "repository": { "type": "git", "url": "https://github.com/tylerdobson/pausepin.git" },
+  "homepage": "https://github.com/tylerdobson/pausepin#readme",
+  "bugs": { "url": "https://github.com/tylerdobson/pausepin/issues" },
   "license": "MIT",
   "devDependencies": { "@types/node": "^24.0.0", "typescript": "^5.9.0" }
 }
