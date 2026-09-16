@@ -64,7 +64,7 @@ export function findGitRoot(cwd: string): string | null {
     throw new Error(`Cannot locate Git worktree: ${result.stderr}`);
   }
   // Git emits one trailing newline. Whitespace may be part of the directory name.
-  return realpathSync(result.stdout.toString('utf8').replace(/\n$/, ''));
+  return realpathSync.native(result.stdout.toString('utf8').replace(/\n$/, ''));
 }
 
 function field(hash: Hash, value: string | Buffer): void {
@@ -169,7 +169,7 @@ function hashWorktreePath(hash: Hash, root: string, path: string, submodule: boo
       field(hash, submodule ? 'submodule' : 'directory');
       const nestedRoot = findGitRoot(absolute);
       // An uninitialized submodule directory still resolves to the parent repo.
-      if (nestedRoot !== realpathSync(absolute)) {
+      if (nestedRoot !== realpathSync.native(absolute)) {
         field(hash, 'uninitialized');
       } else {
         field(hash, snapshot(nestedRoot, budget).fingerprint);

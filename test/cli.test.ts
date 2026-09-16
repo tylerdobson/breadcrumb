@@ -130,7 +130,7 @@ test('resume repeatedly reports Git drift until a new checkpoint is saved', () =
   git(project, 'commit', '-m', 'Fixture');
   mkdirSync(join(project, 'src'));
   const started = json(startArgs, join(project, 'src')).task;
-  assert.equal(started.project, realpathSync(project));
+  assert.equal(started.project, realpathSync.native(project));
   const paused = json(['pause', '--next', 'Check close behavior']);
   assert.equal(json(['status']).drift, false);
   writeFileSync(join(project, 'menu.ts'), 'export const menu = "after!";\n');
@@ -203,7 +203,7 @@ test('non-Git projects use canonical directories and exports isolate each projec
   symlinkSync(project, alias, process.platform === 'win32' ? 'junction' : 'dir');
   mkdirSync(other);
   const first = json(startArgs, alias).task;
-  assert.equal(first.project, realpathSync(project));
+  assert.equal(first.project, realpathSync.native(project));
   assert.equal(json(['status'], project).task.id, first.id);
   json(['park', 'Only in the first project'], alias);
 

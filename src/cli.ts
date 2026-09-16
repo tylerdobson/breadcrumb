@@ -87,7 +87,7 @@ function main(): void {
     throw new Error('Starting needs --next "action" and --done-when "criterion".');
   }
 
-  const cwd = realpathSync(process.cwd());
+  const cwd = realpathSync.native(process.cwd());
   const project = findGitRoot(cwd) ?? cwd;
   const store = new Store();
   try {

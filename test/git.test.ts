@@ -55,7 +55,7 @@ test('inherited Git repository variables do not redirect project snapshots', () 
   const requested = repository();
   const inherited = repository();
   const source = new URL('../src/git.ts', import.meta.url).href;
-  const script = `import assert from 'node:assert/strict'; import { findGitRoot } from ${JSON.stringify(source)}; assert.equal(findGitRoot(process.cwd()), ${JSON.stringify(realpathSync(requested))});`;
+  const script = `import assert from 'node:assert/strict'; import { findGitRoot } from ${JSON.stringify(source)}; assert.equal(findGitRoot(process.cwd()), ${JSON.stringify(realpathSync.native(requested))});`;
   execFileSync(process.execPath, ['--input-type=module', '-e', script], {
     cwd: requested,
     env: { ...process.env, GIT_DIR: join(inherited, '.git'), GIT_WORK_TREE: inherited },
@@ -67,7 +67,7 @@ test('unborn branches and subdirectories use the canonical worktree root', () =>
   const path = repository();
   mkdirSync(join(path, 'nested'));
   const state = captureGitSnapshot(join(path, 'nested'))!;
-  assert.equal(state.root, realpathSync(path));
+  assert.equal(state.root, realpathSync.native(path));
   assert.equal(findGitRoot(join(path, 'nested')), state.root);
   assert.equal(state.branch, 'main');
   assert.equal(state.head, null);
