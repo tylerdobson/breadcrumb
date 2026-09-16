@@ -62,6 +62,12 @@ One task can be unfinished in each project. Finish it with `crumb done` before s
 
 In a Git repository, commands use its canonical root directory, so you can run them from subdirectories. Outside Git, the current canonical directory identifies the project. Repository drift checks are available only when Git is available and the directory is a Git repository.
 
+## Terminal colors
+
+Breadcrumb uses cyan for goals and help headings, green for next actions and success, yellow for warnings and open decisions, magenta for parked ideas, and red for errors. The next action is also bold. Body text keeps your terminal's normal foreground color.
+
+Colors turn on automatically in a TTY when `TERM` is not `dumb`. Set `NO_COLOR` to disable all styling, `FORCE_COLOR=1` to enable colors in pipes, or `FORCE_COLOR=0` to disable colors. `NO_COLOR` takes precedence whenever it is present. `--json` and `crumb export` always produce plain JSON.
+
 ## Local data
 
 Breadcrumb uses SQLite and keeps its database outside your project:
