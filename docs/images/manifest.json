@@ -1,0 +1,26 @@
+{
+  "description": "Fictional Pausepin terminal illustrations, rendered from isolated CLI output.",
+  "assets": [
+    {
+      "file": "pausepin-focus.svg",
+      "width": 1280,
+      "height": 979,
+      "title": "Pin your place.",
+      "source": "demo-session.json"
+    },
+    {
+      "file": "pausepin-resume.svg",
+      "width": 1280,
+      "height": 673,
+      "title": "Come back with context.",
+      "source": "demo-session.json"
+    },
+    {
+      "file": "pausepin-finish.svg",
+      "width": 1280,
+      "height": 700,
+      "title": "Finish on your terms.",
+      "source": "demo-session.json"
+    }
+  ]
+}

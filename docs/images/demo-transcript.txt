@@ -1,0 +1,48 @@
+1. Pin your place.
+One task, a parked idea, and a clear next step.
+
+demo@laptop ~/projects/weather-widget $ pausepin start "Handle an empty forecast" \
+  --next "Add an empty-state test" \
+  --done-when "Empty-state test passes"
+Started: Handle an empty forecast
+Next: Add an empty-state test
+Done when: Empty-state test passes
+
+demo@laptop ~/projects/weather-widget $ pausepin park "Add keyboard shortcuts"
+Parked: Add keyboard shortcuts
+View saved ideas with pausepin ideas.
+
+demo@laptop ~/projects/weather-widget $ pausepin pause \
+  --note "Empty response skips the fallback" \
+  --next "Check the empty-response branch" \
+  --decision "Retry or show cached weather?"
+Checkpoint saved.
+Next time: Check the empty-response branch
+Return with pausepin resume.
+
+2. Come back with context.
+The fictional forecast file changed after the checkpoint.
+
+demo@laptop ~/projects/weather-widget $ pausepin resume
+Goal: Handle an empty forecast
+Next: Check the empty-response branch
+Done when: Empty-state test passes
+Your note: Empty response skips the fallback
+Open decision: Retry or show cached weather?
+Checkpoint: 2030-04-18T14:32:00.000Z
+Git: main · 1 changed file(s)
+Changed since checkpoint. Recheck your saved hypothesis before continuing.
+Verification: not recorded.
+
+3. Finish on your terms.
+Completion records your decision. Pausepin does not run tests.
+
+demo@laptop ~/projects/weather-widget $ pausepin ideas
+1. Add keyboard shortcuts
+
+demo@laptop ~/projects/weather-widget $ pausepin done
+Completed by you: Handle an empty forecast
+No tests were run or verified by Pausepin. Your checkpoints and ideas are retained.
+
+demo@laptop ~/projects/weather-widget $ pausepin status
+No unfinished task here. Run pausepin start to begin.

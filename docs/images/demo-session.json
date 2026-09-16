@@ -1,0 +1,72 @@
+{
+  "panels": [
+    {
+      "id": "focus",
+      "title": "Pin your place.",
+      "subtitle": "One task, a parked idea, and a clear next step.",
+      "entries": [
+        {
+          "command": [
+            "demo@laptop ~/projects/weather-widget $ pausepin start \"Handle an empty forecast\" \\",
+            "  --next \"Add an empty-state test\" \\",
+            "  --done-when \"Empty-state test passes\""
+          ],
+          "output": "\u001b[32mStarted:\u001b[0m Handle an empty forecast\n\u001b[1;32mNext: Add an empty-state test\u001b[0m\n\u001b[1mDone when:\u001b[0m Empty-state test passes\n"
+        },
+        {
+          "command": [
+            "demo@laptop ~/projects/weather-widget $ pausepin park \"Add keyboard shortcuts\""
+          ],
+          "output": "\u001b[35mParked:\u001b[0m Add keyboard shortcuts\nView saved ideas with \u001b[1;36mpausepin ideas\u001b[0m.\n"
+        },
+        {
+          "command": [
+            "demo@laptop ~/projects/weather-widget $ pausepin pause \\",
+            "  --note \"Empty response skips the fallback\" \\",
+            "  --next \"Check the empty-response branch\" \\",
+            "  --decision \"Retry or show cached weather?\""
+          ],
+          "output": "\u001b[32mCheckpoint saved.\u001b[0m\n\u001b[1;32mNext time: Check the empty-response branch\u001b[0m\nReturn with \u001b[1;36mpausepin resume\u001b[0m.\n"
+        }
+      ]
+    },
+    {
+      "id": "resume",
+      "title": "Come back with context.",
+      "subtitle": "The fictional forecast file changed after the checkpoint.",
+      "entries": [
+        {
+          "command": [
+            "demo@laptop ~/projects/weather-widget $ pausepin resume"
+          ],
+          "output": "\u001b[1;36mGoal:\u001b[0m Handle an empty forecast\n\u001b[1;32mNext: Check the empty-response branch\u001b[0m\n\u001b[1mDone when:\u001b[0m Empty-state test passes\n\u001b[1mYour note:\u001b[0m Empty response skips the fallback\n\u001b[33mOpen decision:\u001b[0m Retry or show cached weather?\nCheckpoint: 2030-04-18T14:32:00.000Z\nGit: main · 1 changed file(s)\n\u001b[33mChanged since checkpoint. Recheck your saved hypothesis before continuing.\u001b[0m\nVerification: not recorded.\n"
+        }
+      ]
+    },
+    {
+      "id": "finish",
+      "title": "Finish on your terms.",
+      "subtitle": "Completion records your decision. Pausepin does not run tests.",
+      "entries": [
+        {
+          "command": [
+            "demo@laptop ~/projects/weather-widget $ pausepin ideas"
+          ],
+          "output": "\u001b[35m1.\u001b[0m Add keyboard shortcuts\n"
+        },
+        {
+          "command": [
+            "demo@laptop ~/projects/weather-widget $ pausepin done"
+          ],
+          "output": "\u001b[32mCompleted by you:\u001b[0m Handle an empty forecast\nNo tests were run or verified by Pausepin. Your checkpoints and ideas are retained.\n"
+        },
+        {
+          "command": [
+            "demo@laptop ~/projects/weather-widget $ pausepin status"
+          ],
+          "output": "No unfinished task here. Run \u001b[1;36mpausepin start\u001b[0m to begin.\n"
+        }
+      ]
+    }
+  ]
+}

@@ -6,6 +6,22 @@ Pausepin is a local CLI that keeps your goal, next action, and stopping point to
 
 The design is ADHD-informed: one active task, one visible next action, and a place for tangents. It is an experimental developer tool, with no claim of clinical benefit. You do not need an AI account to use it.
 
+## See it in action
+
+A fictional developer working on a weather widget: start with one next action, park a tangent, and leave a checkpoint for later. These terminal illustrations use real CLI output from an isolated demo—not anyone's personal computer, files, or saved tasks.
+
+![Pausepin starts an empty-forecast task, parks a keyboard-shortcuts idea, and saves a checkpoint with a next action.](docs/images/pausepin-focus.svg)
+
+On return, the next action is highlighted. Saved notes and an open decision restore context; a Git warning signals that the project changed after the checkpoint.
+
+![Pausepin restores the next action, saved note, and open decision, and warns that Git state changed since the checkpoint.](docs/images/pausepin-resume.svg)
+
+Parked ideas remain available after finishing. Marking a task done records your decision—it does not run tests or verify success.
+
+![Pausepin lists a parked idea, records the user's completion decision, and reports no unfinished task.](docs/images/pausepin-finish.svg)
+
+[Read the full text transcript](docs/images/demo-transcript.txt) · [How these fictional examples are made](docs/images/README.md)
+
 ## Get started
 
 Requires Node.js 24 or later and npm. Git is optional.
